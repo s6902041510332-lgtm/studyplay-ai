@@ -185,7 +185,7 @@ function showScreen(screenId) {
 function updateBottomNav(screenId) {
     const navMap = {
         home:'home', summary:'learn', upload:'home', processing:'home',
-        learn:'learn', modes:'play', play:'quick', quiz:'play', matching:'play',
+        learn:'learn', modes:'play', play:'play', quiz:'play', matching:'play',
         timechallenge:'play', result:'play', weaktopic:'play',
         progress:'progress', analytics:'progress', rewards:'profile', profile:'profile',
         teacher:'learn', 'teacher-results':'learn'
@@ -262,6 +262,7 @@ function initSubjectSelector() {
             const tab = document.createElement('button');
             tab.className = 'subject-tab' + (idx === state.currentSubject ? ' active' : '');
             tab.style.setProperty('--subject-color', subject.color);
+            tab.dataset.subjectIndex = idx;
             tab.innerHTML = `<span class="subject-icon">${subject.icon}</span><span>${subject.name}</span>`;
             tab.addEventListener('click', () => selectSubject(idx));
             selector.appendChild(tab);
@@ -272,10 +273,12 @@ function initSubjectSelector() {
 function selectSubject(idx) {
     state.currentSubject = idx;
     const subject = subjects[idx];
-    // Update all tabs
-    document.querySelectorAll('.subject-tab').forEach((tab, i) => {
+    // Update all tabs (there are two selector bars, so use the index stored
+    // on each tab instead of relying on the NodeList position)
+    document.querySelectorAll('.subject-tab').forEach(tab => {
+        const i = parseInt(tab.dataset.subjectIndex, 10);
         tab.classList.toggle('active', i === idx);
-        tab.style.setProperty('--subject-color', subjects[i].color);
+        if (subjects[i]) tab.style.setProperty('--subject-color', subjects[i].color);
     });
     // Update hero card color
     const heroCard = document.getElementById('hero-card');
@@ -1079,15 +1082,20 @@ function showMysteryBox() {
 
 // ============ REVIEW REMINDER ============
 function showReviewReminder() {
-    if (state.reviewReminderShown) return;
-    state.reviewReminderShown = true;
     const modal = document.getElementById('review-reminder-modal');
     if (!modal) return;
+    // If it is already open, do not stack duplicate listeners
+    if (modal.style.display === 'flex') return;
+    state.reviewReminderShown = true;
     modal.style.display = 'flex';
+    const close = () => { modal.style.display = 'none'; };
     const nowBtn = document.getElementById('btn-review-now');
     const laterBtn = document.getElementById('btn-review-later');
-    if (nowBtn) nowBtn.addEventListener('click', () => { modal.style.display = 'none'; showScreen('quiz'); });
-    if (laterBtn) laterBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    if (nowBtn) nowBtn.addEventListener('click', () => { close(); showScreen('play'); });
+    if (laterBtn) laterBtn.addEventListener('click', close);
+    // Safety net: clicking the backdrop also closes it, so the overlay can
+    // never leave the app stuck/unclickable.
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
 }
 
 // ============ INITIALIZATION ============
@@ -1108,8 +1116,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setLanguage('th');
     // Initialize bottom nav AFTER all screens are ready
     initBottomNav();
+    // Render the initial subject (populates lessons grid + hero card)
+    selectSubject(state.currentSubject);
     // Show home screen
     showScreen('home');
-    // Review reminder
-    setTimeout(() => { if (state.currentScreen === 'home') showReviewReminder(); }, 30000);
+    // NOTE: the review reminder is deliberately NOT auto-opened on load.
+    // It is a full-screen overlay with a z-index above the bottom nav, so
+    // firing it automatically used to make the whole app (including the nav)
+    // unclickable. It is only shown from an explicit user action now.
 });

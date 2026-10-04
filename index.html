@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StudyPlay AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-container">
+
+    <!-- ONBOARDING -->
+    <section id="screen-onboarding" class="screen active">
+        <div class="onboarding-container">
+            <div class="onboarding-slide active" data-slide="0">
+                <div class="floating-icon" style="top:0;left:20px">📚</div>
+                <div class="floating-icon" style="top:10px;right:10px">🧠</div>
+                <div class="floating-icon" style="bottom:20px;left:0">🎮</div>
+                <div class="onboarding-illustration">
+                    <span>📖</span><span class="illustration-arrow">→</span><span>🧠</span><span class="illustration-arrow">→</span><span>🎯</span>
+                </div>
+                <h1 class="onboarding-title" data-i18n="onboard1_title">เรียนจบแล้ว อย่าปล่อยให้ลืม</h1>
+                <p class="onboarding-desc" data-i18n="onboard1_desc">ให้ AI เปลี่ยนบทเรียนของคุณเป็นสรุปและแบบฝึกในไม่กี่วินาที</p>
+            </div>
+            <div class="onboarding-slide" data-slide="1">
+                <div class="flow-diagram">
+                    <div class="flow-step"><span>📄</span><span data-i18n="flow_lesson">บทเรียน</span></div>
+                    <div class="flow-arrow-down">↓</div>
+                    <div class="flow-step"><span>🤖</span><span data-i18n="flow_summary">AI สรุป</span></div>
+                    <div class="flow-arrow-down">↓</div>
+                    <div class="flow-step"><span>🎮</span><span data-i18n="flow_quiz">Quiz / เกม</span></div>
+                    <div class="flow-arrow-down">↓</div>
+                    <div class="flow-step"><span>🎯</span><span data-i18n="flow_weak">รู้จุดที่ยังไม่แม่น</span></div>
+                </div>
+                <h1 class="onboarding-title" data-i18n="onboard2_title">อ่านน้อยลง ฝึกให้ตรงจุดมากขึ้น</h1>
+                <p class="onboarding-desc" data-i18n="onboard2_desc">AI ช่วยสรุปเนื้อหาสำคัญ แล้วสร้างแบบฝึกที่ตรงจุดคุณ</p>
+            </div>
+            <div class="onboarding-slide" data-slide="2">
+                <div class="floating-icon" style="top:0;right:30px">🚀</div>
+                <div class="floating-icon" style="bottom:10px;right:0">⭐</div>
+                <div class="onboarding-illustration"><span style="font-size:5rem">🚀</span></div>
+                <h1 class="onboarding-title" data-i18n="onboard3_title">พร้อมเปลี่ยนการทบทวนให้สนุกขึ้นหรือยัง?</h1>
+                <p class="onboarding-desc" data-i18n="onboard3_desc">เริ่มต้นใช้งานได้เลย ไม่ต้องสมัครสมาชิก</p>
+            </div>
+            <div class="onboarding-dots">
+                <span class="dot active" data-dot="0"></span><span class="dot" data-dot="1"></span><span class="dot" data-dot="2"></span>
+            </div>
+            <button class="btn btn-primary btn-lg" id="btn-start-app" data-i18n="start">เริ่มใช้งาน</button>
+        </div>
+    </section>
+
+    <!-- HOME -->
+    <section id="screen-home" class="screen">
+        <div class="home-header">
+            <div class="home-greeting">
+                <h2 data-i18n="greeting">สวัสดี 👋 วันนี้อยากทบทวนอะไร?</h2>
+                <div class="streak-badge"><span class="streak-flame">🔥</span><span data-i18n="streak_text">เรียนต่อเนื่อง 4 วัน</span></div>
+            </div>
+            <div class="home-avatar" id="home-avatar">น้องเก่ง</div>
+        </div>
+
+        <!-- Subject Selector -->
+        <div class="subject-selector" id="subject-selector"></div>
+
+        <div class="hero-card" id="hero-card">
+            <div class="hero-glow"></div>
+            <h3 data-i18n="hero_title">เปลี่ยนบทเรียนเป็นเกมและข้อสอบด้วย AI</h3>
+            <p data-i18n="hero_desc">อัปโหลดบทเรียน แล้วให้ AI ช่วยสร้างแบบฝึกกัน</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="btn-upload-pdf" data-i18n="upload_pdf">อัปโหลดบทเรียน</button>
+                <button class="btn btn-secondary" id="btn-take-photo" data-i18n="take_photo">ถ่ายรูป</button>
+                <button class="btn btn-secondary" id="btn-paste-text" data-i18n="paste_text">วางข้อความ</button>
+            </div>
+            <div class="supported-formats">
+                <span data-i18n="supported">รองรับ:</span>
+                <span class="format-tag">PDF</span>
+                <span class="format-tag" data-i18n="format_slide">รูปสไลด์</span>
+                <span class="format-tag" data-i18n="format_note">โน้ต</span>
+                <span class="format-tag" data-i18n="format_text">ข้อความ</span>
+            </div>
+        </div>
+
+        <div class="continue-learning">
+            <h3 class="section-title" data-i18n="continue_title">เรียนต่อจากครั้งล่าสุด</h3>
+            <div class="continue-card" id="continue-card">
+                <div class="continue-info">
+                    <span class="continue-subject" id="continue-subject">วิชา: ระบบคอมพิวเตอร์</span>
+                    <span class="continue-topic" id="continue-topic">Cache Memory</span>
+                    <div class="progress-bar"><div class="progress-fill" style="width:72%"></div></div>
+                    <span class="progress-text">72%</span>
+                </div>
+                <button class="btn btn-primary btn-sm" id="btn-continue" data-i18n="continue">เรียนต่อ</button>
+            </div>
+        </div>
+
+        <div class="ai-recommendation">
+            <h3 class="section-title" data-i18n="ai_recommend">AI แนะนำวันนี้</h3>
+            <div class="recommendation-card">
+                <div class="recommendation-icon">🤖</div>
+                <p id="recommend-text">เมื่อวานคุณตอบผิดเรื่อง Locality of Reference 3 ครั้ง<br>ลองฝึกเฉพาะหัวข้อนี้อีก 5 ข้อไหม?</p>
+                <div class="recommendation-buttons">
+                    <button class="btn btn-primary btn-sm" id="btn-practice-now" data-i18n="practice_now">ฝึกเลย</button>
+                    <button class="btn btn-ghost btn-sm" id="btn-later" data-i18n="later">ไว้ทีหลัง</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="daily-challenge">
+            <div class="challenge-card">
+                <span class="challenge-icon">🎯</span>
+                <div class="challenge-text">
+                    <strong data-i18n="daily_challenge">ภารกิจวันนี้</strong>
+                    <span data-i18n="challenge_desc">ตอบถูก 5 ข้อติดต่อกัน</span>
+                </div>
+                <div class="challenge-progress">
+                    <div class="progress-bar small"><div class="progress-fill" style="width:60%"></div></div>
+                    <span>3/5</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- UPLOAD -->
+    <section id="screen-upload" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-home">←</button>
+            <h2 data-i18n="upload_title">เพิ่มเนื้อหาที่เรียน</h2>
+        </div>
+        <div class="upload-options">
+            <button class="upload-card" data-type="pdf"><span class="upload-icon">📄</span><span class="upload-label" data-i18n="upload_pdf_card">อัปโหลด PDF</span></button>
+            <button class="upload-card" data-type="camera"><span class="upload-icon">📷</span><span class="upload-label" data-i18n="take_photo_card">ถ่ายรูปสไลด์</span></button>
+            <button class="upload-card" data-type="image"><span class="upload-icon">🖼️</span><span class="upload-label" data-i18n="add_image">เพิ่มรูปจากเครื่อง</span></button>
+            <button class="upload-card" data-type="text"><span class="upload-icon">✏️</span><span class="upload-label" data-i18n="paste_text_card">วางข้อความ</span></button>
+            <button class="upload-card" data-type="note"><span class="upload-icon">📝</span><span class="upload-label" data-i18n="write_note">พิมพ์โน้ตเอง</span></button>
+        </div>
+    </section>
+
+    <!-- AI PROCESSING -->
+    <section id="screen-processing" class="screen">
+        <div class="processing-container">
+            <div class="ai-orb">
+                <div class="ai-orb-inner">🤖</div>
+                <div class="ai-orb-ring"></div>
+                <div class="ai-orb-ring ring-2"></div>
+            </div>
+            <h3 class="processing-title" data-i18n="ai_processing">AI กำลังเปลี่ยนบทเรียนให้เป็นเกม...</h3>
+            <div class="processing-steps">
+                <div class="processing-step" data-step="0"><span class="step-icon">📖</span><span class="step-text" data-i18n="step_reading">กำลังอ่านบทเรียน...</span><span class="step-status"></span></div>
+                <div class="processing-step" data-step="1"><span class="step-icon">🔍</span><span class="step-text" data-i18n="step_topics">กำลังหาหัวข้อสำคัญ...</span><span class="step-status"></span></div>
+                <div class="processing-step" data-step="2"><span class="step-icon">📝</span><span class="step-text" data-i18n="step_summary">กำลังสร้างสรุป...</span><span class="step-status"></span></div>
+                <div class="processing-step" data-step="3"><span class="step-icon">❓</span><span class="step-text" data-i18n="step_questions">กำลังสร้างคำถาม...</span><span class="step-status"></span></div>
+            </div>
+            <div class="processing-progress"><div class="progress-bar"><div class="progress-fill" id="processing-progress-fill"></div></div></div>
+        </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="screen-summary" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btn-back-summary">←</button>
+            <h2 id="summary-title">Cache Memory</h2>
+            <span class="subject-tag" id="summary-subject">วิชา: องค์ประกอบคอมพิวเตอร์</span>
+        </div>
+        <div class="summary-progress">
+            <span data-i18n="read_progress">อ่านแล้ว 60%</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div>
+        </div>
+        <div class="summary-section">
+            <h3 class="section-title" data-i18n="quick_summary">สรุปสั้นมาก</h3>
+            <div class="summary-card glass"><p id="summary-text">Cache Memory คือหน่วยความจำขนาดเล็กที่เร็วที่สุด อยู่ใกล้ CPU ที่สุด เก็บข้อมูลที่ใช้บ่อยเพื่อให้ CPU เข้าถึงได้เร็วขึ้น</p></div>
+        </div>
+        <div class="summary-section">
+            <h3 class="section-title" data-i18n="key_points">ประเด็นสำคัญ</h3>
+            <div class="key-points-grid" id="key-points-grid"></div>
+        </div>
+        <div class="summary-section">
+            <h3 class="section-title" data-i18n="key_terms">คำศัพท์ที่ควรรู้</h3>
+            <div class="terms-list" id="terms-list"></div>
+        </div>
+        <div class="summary-section">
+            <h3 class="section-title" data-i18n="ai_explain">AI อธิบายให้ง่ายขึ้น</h3>
+            <div class="explain-buttons">
+                <button class="btn btn-secondary btn-sm" data-i18n="explain_simple">อธิบายแบบง่าย</button>
+                <button class="btn btn-secondary btn-sm" data-i18n="explain_example">ยกตัวอย่าง</button>
+                <button class="btn btn-secondary btn-sm" data-i18n="explain_compare">เปรียบเทียบให้เห็นภาพ</button>
+            </div>
+        </div>
+        <div class="summary-cta"><button class="btn btn-primary btn-lg" id="btn-start-practice" data-i18n="start_practice">จำได้แค่ไหน? ลองเล่นกัน 🎮</button></div>
+    </section>
+
+    <!-- LEARN SCREEN -->
+    <section id="screen-learn" class="screen">
+        <div class="screen-header"><h2 data-i18n="nav_learn">เรียนรู้</h2></div>
+        <div class="subject-selector" id="learn-subject-selector"></div>
+        <div class="lessons-grid" id="lessons-grid"></div>
+    </section>
+
+    <!-- PLAY SCREEN -->
+    <section id="screen-play" class="screen">
+        <div class="screen-header"><h2 data-i18n="nav_play">เล่น</h2></div>
+        <div class="play-modes-grid">
+            <button class="mode-card mode-quiz" data-mode="quick"><span class="mode-icon">⚡</span><span class="mode-name" data-i18n="mode_quiz">Quiz เร็ว</span><span class="mode-desc" data-i18n="mode_quiz_desc">5 ข้อ ใช้เวลาไม่เกิน 2 นาที</span></button>
+            <button class="mode-card mode-test" data-mode="test"><span class="mode-icon">🧠</span><span class="mode-name" data-i18n="mode_test">แบบทดสอบจริงจัง</span><span class="mode-desc" data-i18n="mode_test_desc">10–20 ข้อ พร้อมคะแนน</span></button>
+            <button class="mode-card mode-match" data-mode="matching"><span class="mode-icon">🧩</span><span class="mode-name" data-i18n="mode_match">จับคู่คำ</span><span class="mode-desc" data-i18n="mode_match_desc">จับคู่คำศัพท์กับความหมาย</span></button>
+            <button class="mode-card mode-fill" data-mode="fill"><span class="mode-icon">🎯</span><span class="mode-name" data-i18n="mode_fill">เติมคำ</span><span class="mode-desc" data-i18n="mode_fill_desc">เติมคำที่หายไป</span></button>
+            <button class="mode-card mode-time" data-mode="time"><span class="mode-icon">⏱️</span><span class="mode-name" data-i18n="mode_time">ตอบแข่งเวลา</span><span class="mode-desc" data-i18n="mode_time_desc">ตอบให้ถูกก่อนหมดเวลา</span></button>
+            <button class="mode-card mode-weak" data-mode="weak"><span class="mode-icon">🔥</span><span class="mode-name" data-i18n="mode_weak">โหมดจุดอ่อน</span><span class="mode-desc" data-i18n="mode_weak_desc">AI เลือกเฉพาะเรื่องที่คุณยังไม่แม่น</span></button>
+            <button class="mode-card mode-random" data-mode="random"><span class="mode-icon">🎲</span><span class="mode-name" data-i18n="mode_random">สุ่มชาเลนจ์</span><span class="mode-desc" data-i18n="mode_random_desc">ให้ AI เลือกเกมให้</span></button>
+        </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="screen-quiz" class="screen">
+        <div class="quiz-header">
+            <div class="quiz-top"><span class="quiz-progress-text" id="quiz-progress-text">ข้อ 1 / 10</span><span class="quiz-score" id="quiz-score">คะแนน: 0</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill" style="width:10%"></div></div>
+            <div class="quiz-streak" id="quiz-streak"></div>
+        </div>
+        <div class="quiz-question-card" id="quiz-question-card">
+            <h3 class="quiz-question" id="quiz-question"></h3>
+            <div class="quiz-answers" id="quiz-answers"></div>
+        </div>
+        <div class="quiz-explanation" id="quiz-explanation" style="display:none">
+            <div class="explanation-card" id="explanation-card">
+                <p id="explanation-text"></p>
+                <div class="explanation-buttons">
+                    <button class="btn btn-primary btn-sm" id="btn-next-question" data-i18n="next">ข้อต่อไป</button>
+                    <button class="btn btn-ghost btn-sm" id="btn-hint" data-i18n="hint">ขอคำใบ้</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MATCHING -->
+    <section id="screen-matching" class="screen">
+        <div class="matching-header">
+            <div class="matching-top"><span class="matching-timer" id="matching-timer">⏱️ 0:45</span><span class="matching-combo" id="matching-combo"></span></div>
+            <h3 data-i18n="matching_title">จับคู่คำศัพท์กับความหมาย</h3>
+        </div>
+        <div class="matching-game" id="matching-game">
+            <div class="matching-left" id="matching-left"></div>
+            <div class="matching-right" id="matching-right"></div>
+        </div>
+    </section>
+
+    <!-- TIME CHALLENGE -->
+    <section id="screen-timechallenge" class="screen">
+        <div class="time-challenge-container">
+            <div class="time-timer" id="time-timer">00:30</div>
+            <div class="time-score" id="time-score">คะแนน: 0</div>
+            <div class="time-question-card" id="time-question-card">
+                <h3 class="time-question" id="time-question"></h3>
+                <div class="time-answers" id="time-answers"></div>
+            </div>
+            <div class="time-bonus" id="time-bonus"></div>
+        </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="screen-result" class="screen">
+        <div class="result-container">
+            <div class="result-stars" id="result-stars"><span class="star star-1">⭐</span><span class="star star-2">⭐</span><span class="star star-3">⭐</span></div>
+            <div class="result-score" id="result-score">8 / 10</div>
+            <div class="result-message" id="result-message" data-i18n="result_great">เยี่ยมมาก! 🎉</div>
+            <div class="result-stats">
+                <div class="result-stat"><span class="stat-value" id="result-accuracy">80%</span><span class="stat-label" data-i18n="accuracy">ความแม่นยำ</span></div>
+                <div class="result-stat"><span class="stat-value" id="result-time">1:23</span><span class="stat-label" data-i18n="time_used">เวลาที่ใช้</span></div>
+                <div class="result-stat"><span class="stat-value" id="result-streak">5</span><span class="stat-label" data-i18n="streak">Streak</span></div>
+                <div class="result-stat"><span class="stat-value xp-earned" id="result-xp">+120 XP</span><span class="stat-label">XP</span></div>
+            </div>
+            <div class="ai-analysis">
+                <h3 data-i18n="ai_analysis">AI วิเคราะห์ให้แล้ว</h3>
+                <div class="analysis-section"><strong class="analysis-strong" data-i18n="strong_topics">✅ เรื่องที่เชี่ยวชาญ</strong><div class="analysis-tags" id="strong-tags"></div></div>
+                <div class="analysis-section"><strong class="analysis-weak" data-i18n="weak_topics">⚠️ ควรทบทวนเพิ่ม</strong><div class="analysis-tags" id="weak-tags"></div></div>
+            </div>
+            <div class="result-buttons">
+                <button class="btn btn-primary" id="btn-practice-weak" data-i18n="practice_weak">ฝึกเฉพาะจุดที่ผิด</button>
+                <button class="btn btn-secondary" id="btn-retry" data-i18n="retry">ลองอีกครั้ง</button>
+                <button class="btn btn-ghost" id="btn-back-home-result" data-i18n="back_home">กลับหน้าหลัก</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- WEAK TOPIC -->
+    <section id="screen-weaktopic" class="screen">
+        <div class="screen-header"><button class="btn-back" id="btn-back-weak">←</button><h2 data-i18n="weak_topic_title">ฝึกจุดที่ยังไม่แม่น</h2></div>
+        <div class="weak-topic-container">
+            <div class="ai-message"><div class="ai-avatar">🤖</div><p data-i18n="ai_weak_message">จากคำตอบที่ผ่านมา คุณยังสับสนเรื่อง Spatial Locality และ Temporal Locality</p></div>
+            <div class="weak-topic-info">
+                <span data-i18n="ai_custom_quiz">AI สร้างแบบฝึกเฉพาะคุณ 5 ข้อ</span>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn active" data-diff="easy" data-i18n="diff_easy">ง่าย</button>
+                    <button class="difficulty-btn" data-diff="medium" data-i18n="diff_medium">ปานกลาง</button>
+                    <button class="difficulty-btn" data-diff="hard" data-i18n="diff_hard">ยาก</button>
+                </div>
+            </div>
+            <div class="weak-topic-progress" id="weak-topic-progress"></div>
+            <div class="improvement-badge" id="improvement-badge" style="display:none"><span data-i18n="improvement">ดีขึ้นแล้ว +18% 🎉</span></div>
+        </div>
+    </section>
+
+    <!-- PROGRESS/ANALYTICS -->
+    <section id="screen-progress" class="screen">
+        <div class="screen-header"><h2 data-i18n="analytics_title">ภาพรวมการเรียนของฉัน</h2></div>
+        <div class="analytics-cards">
+            <div class="analytics-card"><span class="analytics-value">12</span><span class="analytics-label" data-i18n="stat_lessons">บทเรียนที่ทบทวน</span></div>
+            <div class="analytics-card"><span class="analytics-value">156</span><span class="analytics-label" data-i18n="stat_answers">จำนวนข้อที่ตอบ</span></div>
+            <div class="analytics-card"><span class="analytics-value">78%</span><span class="analytics-label" data-i18n="stat_accuracy">ความแม่นยำ</span></div>
+            <div class="analytics-card"><span class="analytics-value">4.2 ชม.</span><span class="analytics-label" data-i18n="stat_time">เวลาที่ใช้เรียน</span></div>
+        </div>
+        <div class="weekly-chart"><h3 class="section-title" data-i18n="weekly_activity">กิจกรรมสัปดาห์นี้</h3><div class="chart-container" id="weekly-chart"></div></div>
+        <div class="mastery-section"><h3 class="section-title" data-i18n="mastery">ความเชี่ยวชาญตามหัวข้อ</h3><div class="mastery-list" id="mastery-list"></div></div>
+        <div class="ai-suggestion"><div class="suggestion-card"><span class="suggestion-icon">🤖</span><p data-i18n="ai_suggest_locality">AI แนะนำให้ฝึก Locality เพิ่ม</p><button class="btn btn-primary btn-sm" id="btn-start-mastery" data-i18n="start_practice_btn">เริ่มฝึก</button></div></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="screen-profile" class="screen">
+        <div class="profile-header">
+            <div class="profile-avatar">น้องเก่ง</div>
+            <h2>น้องเก่ง</h2>
+            <p data-i18n="profile_subtitle">ผู้เรียนที่กำลังพัฒนา</p>
+        </div>
+        <div class="profile-stats">
+            <div class="profile-stat"><span class="profile-stat-value" id="profile-xp">450</span><span class="profile-stat-label">XP</span></div>
+            <div class="profile-stat"><span class="profile-stat-value" id="profile-level">3</span><span class="profile-stat-label" data-i18n="level">เลเวล</span></div>
+            <div class="profile-stat"><span class="profile-stat-value" id="profile-streak">5</span><span class="profile-stat-label" data-i18n="streak_days_short">วันต่อเนื่อง</span></div>
+        </div>
+        <div class="profile-actions"><button class="btn btn-secondary" id="btn-lang-toggle"><span id="lang-toggle-text">English</span></button></div>
+    </section>
+
+    <!-- TEACHER -->
+    <section id="screen-teacher" class="screen">
+        <div class="screen-header"><h2 data-i18n="teacher_title">สร้างแบบฝึกให้นักเรียน</h2></div>
+        <div class="mode-switch">
+            <button class="mode-switch-btn active" data-mode="student" data-i18n="student_mode">โหมดผู้เรียน</button>
+            <button class="mode-switch-btn" data-mode="teacher" data-i18n="teacher_mode">โหมดครู</button>
+        </div>
+        <div class="teacher-form">
+            <div class="form-group"><label data-i18n="upload_lesson">อัปโหลดบทเรียน</label><button class="btn btn-secondary" id="btn-teacher-upload" data-i18n="choose_file">เลือกไฟล์</button></div>
+            <div class="form-group"><label data-i18n="question_count">จำนวนคำถาม</label><div class="question-count-selector"><button class="count-btn" data-count="5">5</button><button class="count-btn active" data-count="10">10</button><button class="count-btn" data-count="15">15</button><button class="count-btn" data-count="20">20</button></div></div>
+            <div class="form-group"><label data-i18n="difficulty">ระดับความยาก</label><div class="difficulty-selector"><button class="difficulty-btn active" data-diff="easy" data-i18n="diff_easy">ง่าย</button><button class="difficulty-btn" data-diff="medium" data-i18n="diff_medium">ปานกลาง</button><button class="difficulty-btn" data-diff="hard" data-i18n="diff_hard">ยาก</button></div></div>
+            <div class="form-group"><label data-i18n="activity_type">ประเภทกิจกรรม</label><div class="activity-types"><button class="activity-btn active" data-type="quiz" data-i18n="type_quiz">Quiz</button><button class="activity-btn" data-type="matching" data-i18n="type_matching">Matching</button><button class="activity-btn" data-type="truefalse" data-i18n="type_truefalse">True/False</button><button class="activity-btn" data-type="mixed" data-i18n="type_mixed">Mixed</button></div></div>
+            <button class="btn btn-primary btn-lg" id="btn-gener-quiz" data-i18n="generate">ให้ AI สร้าง</button>
+        </div>
+        <div class="teacher-preview" id="teacher-preview" style="display:none"><h3 data-i18n="preview">ตัวอย่างแบบฝึก</h3><div class="preview-card" id="preview-card"></div><div class="share-section"><button class="btn btn-primary" id="btn-share" data-i18n="share">แชร์ให้นักเรียน</button><div class="classroom-code"><span data-i18n="classroom_code">รหัสห้อง:</span><strong>SP-2841</strong></div></div></div>
+    </section>
+
+    <!-- TEACHER RESULTS -->
+    <section id="screen-teacher-results" class="screen">
+        <div class="screen-header"><button class="btn-back" id="btn-back-teacher-results">←</button><h2 data-i18n="teacher_results_title">ผลการทำแบบฝึกของห้อง</h2></div>
+        <div class="teacher-stats"><div class="teacher-stat-card"><span class="teacher-stat-value">28/30</span><span class="teacher-stat-label" data-i18n="students_completed">คนทำแล้ว</span></div><div class="teacher-stat-card"><span class="teacher-stat-value">78%</span><span class="teacher-stat-label" data-i18n="avg_score">คะแนนเฉลี่ย</span></div></div>
+        <div class="teacher-analysis"><div class="analysis-item"><strong data-i18n="hardest_question">ข้อที่ยากที่สุด: ข้อ 7</strong></div><div class="analysis-item"><strong data-i18n="most_misunderstood">หัวข้อที่สับสนมากที่สุด: Locality of Reference</strong></div></div>
+        <div class="ai-recommendation-teacher"><div class="suggestion-card"><span class="suggestion-icon">🤖</span><p data-i18n="teacher_ai_recommend">นักเรียนส่วนใหญ่ยังสับสนเรื่อง Temporal และ Spatial Locality<br>แนะนำให้อธิบายสองแนวคิดนี้เปรียบเทียบกันอีกครั้ง</p></div></div>
+    </section>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <button class="nav-item active" id="homeTab" data-nav="home"><span class="nav-icon">🏠</span><span class="nav-label" data-i18n="nav_home">หน้าหลัก</span></button>
+        <button class="nav-item" id="learnTab" data-nav="learn"><span class="nav-icon">📚</span><span class="nav-label" data-i18n="nav_learn">เรียนรู้</span></button>
+        <button class="nav-item" id="playTab" data-nav="play"><span class="nav-icon">🎮</span><span class="nav-label" data-i18n="nav_play">เล่น</span></button>
+        <button class="nav-item" id="progressTab" data-nav="progress"><span class="nav-icon">📊</span><span class="nav-label" data-i18n="nav_analytics">ผลการเรียน</span></button>
+        <button class="nav-item" id="profileTab" data-nav="profile"><span class="nav-icon">👤</span><span class="nav-label" data-i18n="nav_profile">โปรไฟล์</span></button>
+    </nav>
+
+    <!-- CONFETTI -->
+    <div id="confetti-container"></div>
+
+    <!-- MYSTERY BOX -->
+    <div class="modal-overlay" id="mystery-box-modal" style="display:none">
+        <div class="modal-content mystery-box">
+            <div class="mystery-box-icon">🎁</div>
+            <h3 data-i18n="mystery_title">คุณได้รับกล่องรางวัลการเรียนรู้!</h3>
+            <div class="mystery-rewards" id="mystery-rewards"></div>
+            <button class="btn btn-primary" id="btn-open-mystery" data-i18n="open">เปิดเลย!</button>
+        </div>
+    </div>
+
+    <!-- REVIEW REMINDER -->
+    <div class="modal-overlay" id="review-reminder-modal" style="display:none">
+        <div class="modal-content review-reminder">
+            <div class="reminder-icon">🔔</div>
+            <p data-i18n="review_reminder">คุณไม่ได้ทบทวนเรื่อง Cache Memory มา 3 วันแล้ว<br>ลองเล่น Quiz 2 นาทีไหม?</p>
+            <div class="reminder-buttons"><button class="btn btn-primary btn-sm" id="btn-review-now" data-i18n="review_now">เรียนเลย</button><button class="btn btn-ghost btn-sm" id="btn-review-later" data-i18n="later">ไว้ทีหลัง</button></div>
+        </div>
+    </div>
+
+    <!-- EXPLAIN MISTAKE -->
+    <div class="modal-overlay" id="explain-mistake-modal" style="display:none">
+        <div class="modal-content explain-mistake">
+            <h3 data-i18n="explain_mistake_title">ทำไมข้อนี้ผิด?</h3>
+            <div class="mistake-comparison" id="mistake-comparison"></div>
+            <button class="btn btn-primary btn-sm" id="btn-close-explain" data-i18n="got_it">เข้าใจแล้ว</button>
+        </div>
+    </div>
+</div>
+
+<script src="translations.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
